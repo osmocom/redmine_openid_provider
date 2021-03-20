@@ -13,8 +13,8 @@ class OpenIdProviderController < ApplicationController
   layout nil
 
   protect_from_forgery only: :confirm
-  before_filter :find_user, :only => [:user_page, :user_xrdp]
-  skip_before_filter :check_if_login_required
+  before_action :find_user, :only => [:user_page, :user_xrdp]
+  skip_before_action :check_if_login_required
 
   rescue_from ProtocolError, with: :handle_protocol_error
 
