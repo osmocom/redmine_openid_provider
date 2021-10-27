@@ -19,13 +19,13 @@ class OpenIdProviderController < ApplicationController
   rescue_from ProtocolError, with: :handle_protocol_error
 
   def handle_direct_request
-    open_id_request = server.decode_request(params)
+    open_id_request = server.decode_request(permitted_openid_params)
     open_id_response = server.handle_request(open_id_request)
     render_response(open_id_response)
   end
 
   def checkid_setup
-    open_id_request = server.decode_request(params)
+    open_id_request = server.decode_request(permitted_openid_params)
     if !User.current.logged?
       redirect_to_login_page
     elsif !open_id_request.id_select && !owned_by_login_user?(open_id_request.identity)
@@ -38,10 +38,10 @@ class OpenIdProviderController < ApplicationController
   end
 
   def checkid_immediage
-    open_id_request = server.decode_request(params)
+    open_id_request = server.decode_request(permitted_openid_params)
     if !User.current.logged? || !authorized?(open_id_request)
       render_response open_id_request.answer(false)
-    else 
+    else
       render_response build_success_answer(open_id_request)
     end
   end
@@ -93,6 +93,10 @@ class OpenIdProviderController < ApplicationController
   end
 
   protected
+
+  def permitted_openid_params
+    params.to_unsafe_h.keep_if { |k, v| k.start_with?('openid.') }
+  end
 
   def show_confirm_page(open_id_request)
     session[:last_open_id_request] = open_id_request
