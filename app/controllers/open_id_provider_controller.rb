@@ -157,18 +157,18 @@ class OpenIdProviderController < ApplicationController
 
     case web_response.code
     when HTTP_OK
-      render :text => web_response.body, :status => 200
+      render :plain => web_response.body, :status => 200
 
     when HTTP_REDIRECT
       redirect_to web_response.headers['location']
 
     else
-      render :text => web_response.body, :status => 400
+      render :plain => web_response.body, :status => 400
     end
   end
 
   def handle_protocol_error(e)
-    render :text => e.to_s, :status => 500
+    render :plain => e.to_s, :status => 500
   end
 
   def handle_unverified_request
