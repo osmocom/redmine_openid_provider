@@ -37,7 +37,7 @@ class OpenIdProviderController < ApplicationController
     end
   end
 
-  def checkid_immediage
+  def checkid_immediate
     open_id_request = server.decode_request(params)
     if !User.current.logged? || !authorized?(open_id_request)
       render_response open_id_request.answer(false)
