@@ -19,13 +19,13 @@ class OpenIdProviderController < ApplicationController
   rescue_from ProtocolError, with: :handle_protocol_error
 
   def handle_direct_request
-    open_id_request = server.decode_request(params)
+    open_id_request = server.decode_request(params.to_unsafe_h)
     open_id_response = server.handle_request(open_id_request)
     render_response(open_id_response)
   end
 
   def checkid_setup
-    open_id_request = server.decode_request(params)
+    open_id_request = server.decode_request(params.to_unsafe_h)
     if !User.current.logged?
       redirect_to_login_page
     elsif !open_id_request.id_select && !owned_by_login_user?(open_id_request.identity)
