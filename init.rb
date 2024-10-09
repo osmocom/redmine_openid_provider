@@ -7,8 +7,11 @@ Redmine::Plugin.register :redmine_openid_provider do
   author_url 'https://github.com/buri17'
 end
 
+# Modify the middleware stack safely
 RedmineApp::Application.configure do
-  config.middleware.delete OpenIdAuthentication
+  new_middleware_stack = config.middleware.dup  # Create a copy of the middleware stack
+  new_middleware_stack.delete OpenIdAuthentication  # Modify the copy
+  config.middleware = new_middleware_stack  # Assign the modified stack back
 end
 
 Mime::Type.register "application/xrds+xml", :xrds
