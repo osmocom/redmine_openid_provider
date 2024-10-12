@@ -7,8 +7,4 @@ Redmine::Plugin.register :redmine_openid_provider do
   author_url 'https://github.com/buri17'
 end
 
-RedmineApp::Application.configure do
-  config.middleware.delete OpenIdAuthentication
-end
-
 Mime::Type.register "application/xrds+xml", :xrds
