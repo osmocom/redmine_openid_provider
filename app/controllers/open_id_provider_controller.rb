@@ -175,12 +175,30 @@ class OpenIdProviderController < ApplicationController
   end
 
   def redirect_to_login_page
-    # Extract only the basic url parameters on non-GET requests
-    if request.get?
-      url = url_for(params)
-    else
-      url = url_for(:controller => params[:controller], :action => params[:action], :id => params[:id], :project_id => params[:project_id])
-    end
+    permitted = params.permit(
+	:"openid.assoc_handle",
+	:"openid.ax.mode",
+	:"openid.ax.required",
+	:"openid.ax.type.ext0",
+	:"openid.ax.type.ext1",
+	:"openid.ax.type.ext2",
+	:"openid.ax.type.ext3",
+	:"openid.ax.type.ext4",
+	:"openid.ax.type.ext5",
+	:"openid.ax.type.ext6",
+	:"openid.claimed_id",
+	:"openid.identity",
+	:"openid.mode",
+	:"openid.ns",
+	:"openid.ns.ax",
+	:"openid.ns.sreg",
+	:"openid.realm",
+	:"openid.return_to",
+	:"openid.sreg.required",
+	:"controller",
+	:"action"
+	)
+    url = url_for(permitted)
     redirect_to :controller => "account", :action => "login", :back_url => url
   end
 
